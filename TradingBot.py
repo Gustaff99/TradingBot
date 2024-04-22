@@ -30,15 +30,13 @@ def ajustar_precios(btc, factor=10000):
         btc[col] /= factor
     return btc
 
-# Estrategia de trading basada en RSI, EMA y Volumen
 class RsiConEma(Strategy):
-    # Definición de parámetros como variables de clase
-    rangosuperior = 75
-    rangoinferior = 35
-    tiempo_rsi = 16
-    EMA = 175
+    tiempo_rsi = 14
+    EMA = 50
     EMAcorta = 20
-    volumen_minimo = 75000
+    rangosuperior = 70
+    rangoinferior = 30
+    volumen_minimo = 50000
 
     def init(self):
         self.rsi = self.I(talib.RSI, self.data.Close, self.tiempo_rsi)
@@ -70,7 +68,6 @@ class RsiConEma(Strategy):
             if self.ema < self.data.Close[-1] and not self.position:
                 self.buy()
 
-# Configuración del Backtest y salida de parámetros óptimos
 def ejecutar_backtest(btc, autoajustar):
     bt = Backtest(btc, RsiConEma, cash=10000, commission=0.001)
     if autoajustar:
@@ -81,19 +78,25 @@ def ejecutar_backtest(btc, autoajustar):
             EMA=range(100, 200, 25),
             EMAcorta=range(20, 50, 10),
             volumen_minimo=range(50000, 100000, 25000),
-            maximize='Equity Final [$]',
-            return_heatmap=True)
-        print("Mejores parámetros: \n", result)
+            maximize='Equity Final [$]')
+        
+        print("Mejores parámetros:")
+        print(result._strategy._params)  # Corregido para acceder correctamente a los parámetros
+
+        print("\nMejores estadísticas de rendimiento:")
         print(result)
+        
+        bt.plot()
     else:
         result = bt.run()
         print(result)
-    bt.plot()
+        bt.plot()
 
-# Principal
-filepath = r'C:\Users\Gus\Desktop\Proyectos\Trading Bot\DatosBTC.csv'
-btc = cargar_y_preparar_datos(filepath)
-btc = seleccionar_datos(btc, 10000, 300000)
-btc = ajustar_precios(btc)
-autoajustar = True  # Cambiar a False para ejecutar sin optimización
-ejecutar_backtest(btc, autoajustar)
+if __name__ == "__main__":
+    filepath = r'C:\Users\Gus\Desktop\Proyectos\Trading Bot\DatosBTC.csv'
+    btc = cargar_y_preparar_datos(filepath)
+    btc = seleccionar_datos(btc, 10000, 300000)
+    btc = ajustar_precios(btc)
+    autoajustar = True
+    ejecutar_backtest(btc, autoajustar)
+
