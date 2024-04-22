@@ -15,7 +15,7 @@ def cargar_y_preparar_datos(filepath):
 # Selección de una porción del dataset
 def seleccionar_datos(btc, inicio, fin):
     btc = btc[inicio:fin]
-    btc = btc.resample("60T").agg({
+    btc = btc.resample("24H").agg({
         "Open": "first",
         "High": "max",
         "Low": "min",
@@ -32,10 +32,10 @@ def ajustar_precios(btc, factor=10000):
 
 class RsiConEma(Strategy):
     tiempo_rsi = 14
-    EMA = 50
+    EMA = 175
     EMAcorta = 20
     rangosuperior = 70
-    rangoinferior = 30
+    rangoinferior = 25
     volumen_minimo = 50000
 
     def init(self):
@@ -95,7 +95,7 @@ def ejecutar_backtest(btc, autoajustar):
 if __name__ == "__main__":
     filepath = r'C:\Users\Gus\Desktop\Proyectos\Trading Bot\DatosBTC.csv'
     btc = cargar_y_preparar_datos(filepath)
-    btc = seleccionar_datos(btc, 10000, 300000)
+    btc = seleccionar_datos(btc, 1000, 1000000)
     btc = ajustar_precios(btc)
     autoajustar = True
     ejecutar_backtest(btc, autoajustar)
