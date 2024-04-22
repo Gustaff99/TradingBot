@@ -77,13 +77,13 @@ def ejecutar_backtest(btc, autoajustar):
         stats, param = bt.optimize(
             rangosuperior=range(65, 80, 5),
             rangoinferior=range(25, 40, 5),
-            tiempo_rsi=range(12, 20, 2),
+            tiempo_rsi=range(12, 18, 2),
             EMA=range(100, 200, 25),
-            EMAcorta=range(20, 60, 10),
-            volumen_minimo=range(50000, 150000, 25000),
+            EMAcorta=range(20, 50, 10),
+            volumen_minimo=range(50000, 100000, 25000),
             maximize='Equity Final [$]',
             return_heatmap=True)
-        print("Mejores parámetros:", param)
+        print("Mejores parámetros: \n", param)
         print(stats)
     else:
         stats = bt.run()
