@@ -1,6 +1,4 @@
-# TradingBot
-
-🌟 Bitcoin Trading Simulation Project 🌟
+#🌟 Bitcoin Trading Simulation Project 🌟 🇬🇧
 
 This project contains a Python script for simulating trading strategies using historical Bitcoin data. The trading strategy utilizes technical analysis indicators such as the Relative Strength Index (RSI) and Exponential Moving Averages (EMA) to make buy or sell decisions based on set criteria. The script is built using the backtesting.py library which facilitates quick and insightful backtesting of trading strategies.
 
@@ -38,9 +36,7 @@ Proposing new features or enhancements. 🆕
 Reporting bugs. 🐛
 Adding more trading indicators or strategies. 📝
 
-
-README en Español con Emojis
-🌟 Proyecto de Simulación de Trading de Bitcoin 🌟
+#🌟 Proyecto de Simulación de Trading de Bitcoin 🌟 🇪🇸
 
 Este proyecto contiene un script en Python para la simulación de estrategias de trading utilizando datos históricos de Bitcoin. La estrategia de trading utiliza indicadores de análisis técnico como el Índice de Fuerza Relativa (RSI) y Medias Móviles Exponenciales (EMA) para tomar decisiones de compra o venta basadas en criterios establecidos. El script está construido utilizando la biblioteca backtesting.py, que facilita la realización de backtests rápidos y reveladores de estrategias de trading.
 
