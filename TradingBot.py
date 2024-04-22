@@ -2,8 +2,8 @@ from backtesting import Backtest, Strategy
 from backtesting.lib import crossover
 import talib
 import pandas as pd
+import numpy as np
 
-# Carga y preparación del dataset
 def cargar_y_preparar_datos(filepath):
     btc = pd.read_csv(filepath, sep=";", decimal=".")
     btc = btc.interpolate(limit_direction='both')
@@ -12,10 +12,9 @@ def cargar_y_preparar_datos(filepath):
     btc['Volume'] = btc['Volume'].replace(r'\.', '', regex=True).astype(float)
     return btc
 
-# Selección de una porción del dataset
 def seleccionar_datos(btc, inicio, fin):
     btc = btc[inicio:fin]
-    btc = btc.resample("24H").agg({
+    btc = btc.resample("1D").agg({
         "Open": "first",
         "High": "max",
         "Low": "min",
@@ -24,68 +23,81 @@ def seleccionar_datos(btc, inicio, fin):
     })
     return btc
 
-# Ajustar los precios para la simulación
 def ajustar_precios(btc, factor=10000):
     for col in ["Open", "High", "Low", "Close"]:
         btc[col] /= factor
     return btc
 
-class RsiConEma(Strategy):
+def ichimoku_cloud(high, low, close):
+    # Asegúrate de que high, low, y close son Series de pandas
+    high = pd.Series(high)
+    low = pd.Series(low)
+    close = pd.Series(close)
+
+    tenkan_sen = (high.rolling(window=9).max() + low.rolling(window=9).min()) / 2
+    kijun_sen = (high.rolling(window=26).max() + low.rolling(window=26).min()) / 2
+    senkou_span_a = ((tenkan_sen + kijun_sen) / 2).shift(26)
+    senkou_span_b = ((high.rolling(window=52).max() + low.rolling(window=52).min()) / 2).shift(26)
+    chikou_span = close.shift(-26)
+
+    return tenkan_sen, kijun_sen, senkou_span_a, senkou_span_b, chikou_span
+
+class ProfessionalStrategy(Strategy):
+    # Definición de parámetros como variables de clase
     tiempo_rsi = 14
-    EMA = 175
-    EMAcorta = 20
-    rangosuperior = 70
-    rangoinferior = 25
-    volumen_minimo = 50000
+    macd_fast = 12
+    macd_slow = 26
+    macd_signal = 9
+    stoch_k = 14
+    stoch_d = 3
+    atr_period = 14
 
     def init(self):
+        # Indicadores
         self.rsi = self.I(talib.RSI, self.data.Close, self.tiempo_rsi)
-        self.ema = self.I(talib.EMA, self.data.Close, self.EMA)
-        self.emacorta = self.I(talib.EMA, self.data.Close, self.EMAcorta)
+        self.macd, self.signal, _ = self.I(talib.MACD, self.data.Close, self.macd_fast, self.macd_slow, self.macd_signal)
+        self.adx = self.I(talib.ADX, self.data.High, self.data.Low, self.data.Close, 14)
+        self.atr = self.I(talib.ATR, self.data.High, self.data.Low, self.data.Close, self.atr_period)
+        # Calcular Ichimoku Cloud externamente
+        ichimoku_results = ichimoku_cloud(self.data.High, self.data.Low, self.data.Close)
+        self.tenkan_sen = self.I(lambda x: x, ichimoku_results[0])
+        self.kijun_sen = self.I(lambda x: x, ichimoku_results[1])
+        self.senkou_span_a = self.I(lambda x: x, ichimoku_results[2])
+        self.senkou_span_b = self.I(lambda x: x, ichimoku_results[3])
+        self.chikou_span = self.I(lambda x: x, ichimoku_results[4])
 
     def next(self):
-        if self.data.Volume[-1] < self.volumen_minimo:
-            return
-
-        if self.position.pl_pct < -0.01:
-            self.position.close()
-
-        if self.position.is_short and self.position.pl_pct > 0.015 and crossover(self.rsi, self.rangoinferior + 10):
-            self.position.close()
-
-        if self.position.is_long and self.position.pl_pct > 0.02 and crossover(self.rangosuperior - 20, self.rsi):
-            self.position.close()
-
-        if crossover(self.rangosuperior, self.rsi):
-            if self.position.is_long:
+        if not self.position:
+            if (self.rsi[-1] > 50 and crossover(self.macd, self.signal) and
+                self.data.Close[-1] > self.senkou_span_a[-1] and
+                self.data.Close[-1] > self.senkou_span_b[-1]):
+                sl = self.data.Close[-1] - 2 * self.atr[-1]
+                self.buy(sl=sl)
+        else:
+            if (crossover(self.signal, self.macd) or
+                self.data.Close[-1] < self.senkou_span_a[-1] or
+                self.data.Close[-1] < self.senkou_span_b[-1]):
                 self.position.close()
-            if self.ema > self.data.Close[-1] and not self.position:
-                self.sell()
 
-        elif crossover(self.rsi, self.rangoinferior):
-            if self.position.is_short:
-                self.position.close()
-            if self.ema < self.data.Close[-1] and not self.position:
-                self.buy()
 
 def ejecutar_backtest(btc, autoajustar):
-    bt = Backtest(btc, RsiConEma, cash=10000, commission=0.001)
+    bt = Backtest(btc, ProfessionalStrategy, cash=10000, commission=0.001)
     if autoajustar:
+        # Asegúrate de definir rangos para al menos algunos parámetros de tu estrategia
         result = bt.optimize(
-            rangosuperior=range(65, 80, 5),
-            rangoinferior=range(25, 40, 5),
-            tiempo_rsi=range(12, 18, 2),
-            EMA=range(100, 200, 25),
-            EMAcorta=range(20, 50, 10),
-            volumen_minimo=range(50000, 100000, 25000),
-            maximize='Equity Final [$]')
-        
+            tiempo_rsi=range(10, 20, 2),
+            macd_fast=range(5, 15, 2),
+            macd_slow=range(20, 40, 2),
+            macd_signal=range(5, 15, 2),
+            stoch_k=range(10, 20, 2),
+            stoch_d=range(2, 10, 2),
+            atr_period=range(10, 20, 2),
+            maximize='Equity Final [$]'
+        )
         print("Mejores parámetros:")
-        print(result._strategy._params)  # Corregido para acceder correctamente a los parámetros
-
-        print("\nMejores estadísticas de rendimiento:")
+        print(result._strategy._params)
+        print("Mejores estadísticas de rendimiento:")
         print(result)
-        
         bt.plot()
     else:
         result = bt.run()
@@ -97,6 +109,4 @@ if __name__ == "__main__":
     btc = cargar_y_preparar_datos(filepath)
     btc = seleccionar_datos(btc, 1000, 1000000)
     btc = ajustar_precios(btc)
-    autoajustar = True
-    ejecutar_backtest(btc, autoajustar)
-
+    ejecutar_backtest(btc, True)
