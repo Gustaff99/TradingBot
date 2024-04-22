@@ -33,12 +33,12 @@ def ajustar_precios(btc, factor=10000):
 # Estrategia de trading basada en RSI, EMA y Volumen
 class RsiConEma(Strategy):
     # Definición de parámetros como variables de clase
-    rangosuperior = 70
-    rangoinferior = 30
-    tiempo_rsi = 14
-    EMA = 200
-    EMAcorta = 50
-    volumen_minimo = 100000
+    rangosuperior = 75
+    rangoinferior = 35
+    tiempo_rsi = 16
+    EMA = 175
+    EMAcorta = 20
+    volumen_minimo = 75000
 
     def init(self):
         self.rsi = self.I(talib.RSI, self.data.Close, self.tiempo_rsi)
@@ -74,7 +74,7 @@ class RsiConEma(Strategy):
 def ejecutar_backtest(btc, autoajustar):
     bt = Backtest(btc, RsiConEma, cash=10000, commission=0.001)
     if autoajustar:
-        stats, param = bt.optimize(
+        result = bt.optimize(
             rangosuperior=range(65, 80, 5),
             rangoinferior=range(25, 40, 5),
             tiempo_rsi=range(12, 18, 2),
@@ -83,11 +83,11 @@ def ejecutar_backtest(btc, autoajustar):
             volumen_minimo=range(50000, 100000, 25000),
             maximize='Equity Final [$]',
             return_heatmap=True)
-        print("Mejores parámetros: \n", param)
-        print(stats)
+        print("Mejores parámetros: \n", result)
+        print(result)
     else:
-        stats = bt.run()
-        print(stats)
+        result = bt.run()
+        print(result)
     bt.plot()
 
 # Principal
