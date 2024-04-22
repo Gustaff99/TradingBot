@@ -1,4 +1,4 @@
-#🌟 Bitcoin Trading Simulation Project 🌟 🇬🇧
+🌟 Bitcoin Trading Simulation Project 🌟 🇬🇧
 
 This project contains a Python script for simulating trading strategies using historical Bitcoin data. The trading strategy utilizes technical analysis indicators such as the Relative Strength Index (RSI) and Exponential Moving Averages (EMA) to make buy or sell decisions based on set criteria. The script is built using the backtesting.py library which facilitates quick and insightful backtesting of trading strategies.
 
