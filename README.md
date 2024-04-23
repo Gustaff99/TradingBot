@@ -1,75 +1,97 @@
-# Bitcoin Trading Simulation Project 🌟 🇬🇧
+# TradingBot 🤖 🇬🇧
 
-This project contains a Python script for simulating trading strategies using historical Bitcoin data. The trading strategy utilizes technical analysis indicators such as the Relative Strength Index (RSI) and Exponential Moving Averages (EMA) to make buy or sell decisions based on set criteria. The script is built using the backtesting.py library which facilitates quick and insightful backtesting of trading strategies.
+## Description 📝
+TradingBot is an algorithmic trading bot designed to operate in the cryptocurrency market, specifically with Bitcoin. It uses a combination of technical indicators to make buy and sell decisions in a simulated backtesting environment.
 
-🚀 Features:
+## Trading Strategy 📊
+The strategy implemented in TradingBot includes the following technical indicators:
+- **RSI (Relative Strength Index)**: Used to measure the speed and change of price movements.
+- **MACD (Moving Average Convergence Divergence)**: This indicator helps identify changes in strength, direction, momentum, and duration of a trend in the price of an asset.
+- **ADX (Average Directional Index)**: Measures the strength of a trend.
+- **ATR (Average True Range)**: Provides information on market volatility.
+- **Ichimoku Cloud**: Offers a comprehensive view of future price and market action through various components that provide support and resistance levels as well as momentum and trend insights.
 
-RSI and EMA-based trading logic. 📊
-Volume filtering to ensure significant trade volume. 📈
-Parameter optimization to find the best performing settings. 🔍
-Visualization of trading activity and strategy performance. 📉
-🛠 Installation:
-To run this project, you need Python installed on your machine along with the following Python libraries:
+The strategy combines signals from these indicators to determine optimal entry and exit points, using a dynamic stop-loss based on the ATR to manage risk.
 
-pandas
-numpy
-talib (Technical Analysis Library)
-backtesting.py
-You can install the necessary libraries using pip:
+## Installation 🛠️
+To run TradingBot, you will need Python and several specialized libraries.
 
-Copy code
-pip install pandas numpy backtesting
-For talib, follow the installation instructions on TA-Lib.
+### Prerequisites
+- Python 3.8 or higher
+- Pandas
+- NumPy
+- TA-Lib
+- backtesting.py
 
-🔧 Usage:
+You can install all the necessary dependencies with pip, using the following command:
 
-Download or clone the repository to your local machine.
-Place your historical data CSV in the same directory as the script, or update the filepath in the script to match the location of your CSV file.
-Run the script using:
-Copy code
-python TradingBotChatGPT.py
-View the output plots and optimization results directly in your terminal or as generated plots.
-✨ Contributing:
-Contributions to this project are welcome. You can contribute in several ways:
+```bash
+pip install pandas numpy backtesting talib
+```
 
-Proposing new features or enhancements. 🆕
-Reporting bugs. 🐛
-Adding more trading indicators or strategies. 📝
+### TA-Lib Installation
+The installation of TA-Lib can vary depending on your operating system. Consult [TA-Lib](https://github.com/TA-Lib/ta-lib-python) for specific instructions for your system.
 
-# Proyecto de Simulación de Trading de Bitcoin 🌟 🇪🇸
+## Usage 🚀
+To run the backtest with TradingBot, follow these steps:
 
-Este proyecto contiene un script en Python para la simulación de estrategias de trading utilizando datos históricos de Bitcoin. La estrategia de trading utiliza indicadores de análisis técnico como el Índice de Fuerza Relativa (RSI) y Medias Móviles Exponenciales (EMA) para tomar decisiones de compra o venta basadas en criterios establecidos. El script está construido utilizando la biblioteca backtesting.py, que facilita la realización de backtests rápidos y reveladores de estrategias de trading.
+1. Place the `DatosBTC.csv` data file on your desktop or update the path in the script.
+2. Run the script from the terminal:
 
-🚀 Características:
+```bash
+python TradingBot.py
+```
 
-Lógica de trading basada en RSI y EMA. 📊
-Filtrado por volumen para asegurar un volumen de comercio significativo. 📈
-Optimización de parámetros para encontrar los ajustes de mejor rendimiento. 🔍
-Visualización de la actividad comercial y el rendimiento de la estrategia. 📉
-🛠 Instalación:
-Para ejecutar este proyecto, necesitas tener Python instalado en tu máquina junto con las siguientes bibliotecas de Python:
+The script will automatically perform the backtesting of the strategy with the provided data and display the results in charts and performance summaries.
 
-pandas
-numpy
-talib (Biblioteca de Análisis Técnico)
-backtesting.py
-Puedes instalar las bibliotecas necesarias usando pip:
+## Contributing 🤝
+If you wish to contribute to the project, please consider cloning the repository, creating a feature branch, and submitting your pull requests for review.
 
-Copy code
-pip install pandas numpy backtesting
-Para talib, sigue las instrucciones de instalación en TA-Lib.
+# TradingBot 🤖 🇪🇸
 
-🔧 Uso:
+## Descripción 📝
+TradingBot es un bot de trading algorítmico diseñado para operar en el mercado de criptomonedas, específicamente con Bitcoin. Utiliza una combinación de indicadores técnicos para tomar decisiones de compra y venta en un entorno simulado de backtesting.
 
-Descarga o clona el repositorio en tu máquina local.
-Coloca tu CSV de datos históricos en el mismo directorio que el script, o actualiza la ruta del archivo en el script para que coincida con la ubicación de tu archivo CSV.
-Ejecuta el script utilizando:
-Copy code
-python TradingBotChatGPT.py
-Visualiza los resultados de las gráficas y la optimización directamente en tu terminal o como gráficas generadas.
-✨ Contribuir:
-Las contribuciones a este proyecto son bienvenidas. Puedes contribuir de varias maneras:
+## Estrategia de Trading 📊
+La estrategia implementada en TradingBot incluye los siguientes indicadores técnicos:
+- **RSI (Relative Strength Index)**: Se utiliza para medir la velocidad y cambio de los movimientos de precios.
+- **MACD (Moving Average Convergence Divergence)**: Este indicador ayuda a identificar cambios en la fuerza, dirección, momentum y duración de una tendencia en el precio de un activo.
+- **ADX (Average Directional Index)**: Mide la fuerza de una tendencia.
+- **ATR (Average True Range)**: Proporciona información sobre la volatilidad del mercado.
+- **Ichimoku Cloud**: Ofrece una visión integral del precio y la acción del mercado futuro a través de varios componentes que proporcionan niveles de soporte y resistencia así como insights de momentum y tendencia.
 
-Proponiendo nuevas características o mejoras. 🆕
-Reportando errores. 🐛
-Añadiendo más indicadores de trading o estrategias. 📝
+La estrategia combina señales de estos indicadores para determinar puntos óptimos de entrada y salida, utilizando un stop-loss dinámico basado en el ATR para gestionar el riesgo.
+
+## Instalación 🛠️
+Para ejecutar TradingBot, necesitarás Python y varias bibliotecas especializadas.
+
+### Prerrequisitos
+- Python 3.8 o superior
+- Pandas
+- NumPy
+- TA-Lib
+- backtesting.py
+
+Puedes instalar todas las dependencias necesarias con pip, utilizando el siguiente comando:
+
+```bash
+pip install pandas numpy backtesting talib
+```
+
+### Instalación de TA-Lib
+La instalación de TA-Lib puede variar según tu sistema operativo. Consulta [TA-Lib](https://github.com/TA-Lib/ta-lib-python) para obtener instrucciones específicas para tu sistema.
+
+## Uso 🚀
+Para ejecutar el backtest con TradingBot, sigue estos pasos:
+
+1. Coloca el archivo de datos `DatosBTC.csv` en tu escritorio o actualiza la ruta en el script.
+2. Ejecuta el script desde la terminal:
+
+```bash
+python TradingBot.py
+```
+
+El script ejecutará automáticamente el backtesting de la estrategia con los datos proporcionados y mostrará los resultados en gráficos y resúmenes de desempeño.
+
+## Contribuir 🤝
+Si deseas contribuir al proyecto, por favor considera clonar el repositorio, crear una rama de característica y someter tus pull requests para revisión.
