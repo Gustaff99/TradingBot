@@ -1,16 +1,19 @@
+import os
 from backtesting import Backtest, Strategy
 from backtesting.lib import crossover
 import talib
 import pandas as pd
-import numpy as np
+
 
 def cargar_y_preparar_datos(filepath):
     btc = pd.read_csv(filepath, sep=";", decimal=".")
+    btc = btc.infer_objects()  # Infiera tipos de datos más apropiados antes de interpolar.
     btc = btc.interpolate(limit_direction='both')
     btc["Date"] = pd.to_datetime(btc["Unix"], unit="s")
     btc = btc.set_index('Date')
     btc['Volume'] = btc['Volume'].replace(r'\.', '', regex=True).astype(float)
     return btc
+
 
 def seleccionar_datos(btc, inicio, fin):
     btc = btc[inicio:fin]
@@ -89,9 +92,9 @@ def ejecutar_backtest(btc, autoajustar):
             macd_fast=range(5, 15, 2),
             macd_slow=range(20, 40, 2),
             macd_signal=range(5, 15, 2),
-            stoch_k=range(10, 20, 2),
-            stoch_d=range(2, 10, 2),
-            atr_period=range(10, 20, 2),
+            stoch_k=range(10, 20, 3),
+            stoch_d=range(2, 10, 3),
+            atr_period=range(10, 20, 5),
             maximize='Equity Final [$]'
         )
         print("Mejores parámetros:")
@@ -105,8 +108,8 @@ def ejecutar_backtest(btc, autoajustar):
         bt.plot()
 
 if __name__ == "__main__":
-    filepath = r'C:\Users\Gus\Desktop\Proyectos\Trading Bot\DatosBTC.csv'
+    filepath = os.path.join(os.path.expanduser('~'),'Desktop', 'TradingBot', 'DatosBTC.csv')
     btc = cargar_y_preparar_datos(filepath)
-    btc = seleccionar_datos(btc, 1000, 1000000)
+    btc = seleccionar_datos(btc, 10000, 1000000)
     btc = ajustar_precios(btc)
     ejecutar_backtest(btc, True)
